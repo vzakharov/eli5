@@ -1,6 +1,23 @@
 <template>
 
   <b-container class="mt-5">
+    <!-- Temporary: modal that shows that we've run out of API quote and cannot use the app right now -->
+    <b-modal
+      v-model="alwaysTrue"
+      no-close-on-backdrop
+      no-close-on-esc
+      hide-header
+      hide-footer
+      title="API Quota Exceeded"
+      size="lg"
+      centered
+    >
+      <h1>Oops! Quota exceeded</h1>
+      <p>You guys used this tool so much (which is great!) that we’ve run out of our API quota.</p>
+      <p>Come back on the 1st of the next month.</p>
+      <p>In the meantime, you can <a href="https://vzakharov.github.io/buy-me-a-beer">buy me a beer</a>
+      so that I can continue spending all the money on it ;-)</p>
+    </b-modal>
     <b-row>
       <b-col
         class="text-center font-weight-bold"
@@ -176,6 +193,18 @@
           }
         }
       })
+
+    },
+
+    computed: {
+
+      alwaysTrue: {
+        get() {
+          return true
+        },
+        set() {          
+        }
+      }
 
     },
 
