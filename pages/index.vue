@@ -93,6 +93,26 @@
         Buy me a 🍺
       </a>
     </div>
+    <!-- Buy me a beer modal, shown is this.suggestToPay is true -->
+    <b-modal
+      id="buy-me-a-beer"
+      title="Enjoying ELI5?"
+      v-model="suggestToPay"
+      hide-footer
+    >
+      <p>Seems like you’re really enjoying this tool, and that’s great!</p>
+      <p>While the tool is free for you, it actually costs me some money to send the requests to the API.</p>
+      <p>So if you want to support me, you can do this here:</p>
+      <b-button
+        variant="primary"
+        size="lg"
+        href="https://vzakharov.github.io/buy-me-a-beer"
+        target="_blank"
+      >
+        Buy me a 🍺
+      </b-button>
+      <p class="mt-3">Thank you!</p>
+    </b-modal>
   </b-container>
 
 </template>
@@ -122,11 +142,13 @@
 
         settings: {
           hintShown: false,
+          numQueries: 0
         },
 
         query: '',
         thinking: false,
-        response: null
+        response: null,
+        suggestToPay: false
 
       }
 
@@ -242,6 +264,12 @@
               response
             }
           })
+
+          this.settings.numQueries++
+          // Every 20th query, set suggestToPay to true
+          if ( this.settings.numQueries % 20 === 0 ) {
+            this.suggestToPay = true
+          }
 
           this.response = response
 
