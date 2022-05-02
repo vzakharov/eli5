@@ -47,6 +47,7 @@
             <b-input
               id="query"
               v-model="query"
+              :disabled="thinking"
               placeholder="A term, a question, anything, basically."
               :style="{
                 // margin: auto; font-weight: light;
@@ -57,6 +58,7 @@
           </b-form-group>
           <!-- Submit -->
           <b-button
+            v-if="!thinking"
             type="submit"
             class="mt-3"
             :disabled="!query"
