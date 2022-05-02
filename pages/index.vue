@@ -3,7 +3,7 @@
   <b-container class="mt-5">
     <!-- Temporary: modal that shows that we've run out of API quote and cannot use the app right now -->
     <b-modal
-      v-model="alwaysTrue"
+      v-model="always(false).value"
       no-close-on-backdrop
       no-close-on-esc
       hide-header
@@ -32,7 +32,7 @@
           <!-- Favicon -->
         </h1>
         <p class="lead">
-          This is a simple tool to explain anything to your kids. Or to yourself, for that matter.
+          This is a simple tool to explain anything to your kids. Or anyone.
         </p>
         <!-- Query form -->
         <b-form
@@ -48,7 +48,11 @@
               id="query"
               v-model="query"
               placeholder="A term, a question, anything, basically."
-              style="margin: auto; font-size: 1em; font-weight: light;"
+              :style="{
+                // margin: auto; font-weight: light;
+                margin: 'auto', fontWeight: 'light',
+                fontSize: query.length < 50 ? '1em' : '0.8em'
+              }"
             />
           </b-form-group>
           <!-- Submit -->
@@ -72,22 +76,27 @@
         <!-- Response in a div if there is one -->
         <div
           v-else-if="response"
+          id="response"
+          class="my-5"
         >
-          <div
-            id="response"
-            class="my-5"
+          <p
+            v-for="paragraph, index in response.split('\n')"
+            :key="index"
           >
-            <component 
-              v-for="bit, i in response.split(/\b/)"
-              :key="i"
-              :is="
-                // <nuxt-link> if word, span otherwise
-                bit.match(/^\w+$/) ? 'nuxt-link' : 'span'
-              "
-              :to="bit.match(/^\w+$/) ? { query: { q: bit }} : undefined"
-              v-text="bit"
-            />
-          </div>
+            <template 
+              v-for="bit, i in paragraph.split(/\b/)"
+            >
+              <nuxt-link
+                :key="i"
+                v-if="
+                  bit.match(/^\w+$/)
+                "
+                :to="{ query: { q: bit }}"
+                v-text="bit"
+              />
+              <template v-else>{{ bit }}</template>
+            </template>
+          </p>
           <!-- Small text -->
           <div
             v-if="!settings.hintShown"
@@ -196,19 +205,18 @@
 
     },
 
-    computed: {
-
-      alwaysTrue: {
-        get() {
-          return true
-        },
-        set() {          
-        }
-      }
-
-    },
-
     methods: {
+
+      always(what) {
+        // Returns a { value } object where the value has a getter that always returns what and the setter that does nothing
+        return Object.defineProperty({}, 'value', {
+          get() {
+            return what
+          },
+          set() {
+          }
+        })
+      },
 
       async getToxicity(query) {
 
